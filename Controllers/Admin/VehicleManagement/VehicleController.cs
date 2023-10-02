@@ -1,28 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RentCarApi.Entities.Vehicles.TechnicalInformation;
-using RentCarApi.Repositories.UnitOfWork;
+using RentCarApi.Services.VehicleServices.VehicleService;
+using RentCarApi.Services.VehicleServices.VehicleService.Request;
 
 namespace RentCarApi.Controllers.Admin.VehicleManagement
 {
-    [Route("api/[controller]")]
+    [Route("api/VehicleManagement/[controller]")]
     [ApiController]
-    public class AdminController : Controller
+    public class VehicleController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public AdminController(IUnitOfWork unitOfWork)
+        private readonly VehiclesService _vehiclesService;
+        public VehicleController(VehiclesService vehiclesService)
         {
-            _unitOfWork = unitOfWork;
+            _vehiclesService = vehiclesService;
         }
 
-        [HttpPost("CreateMark")]
-        public async Task<IActionResult> CreateMark(Mark mark)
+        [HttpPost("CreateVehicle")]
+        public async Task<IActionResult> CreateVehicle([FromBody]CreateVehicleModel request)
         {
-            await _unitOfWork.MarkRepository.AddAsync(mark);
-            await _unitOfWork.SaveChangeAsync();
-
+            await _vehiclesService.CreateVehicle(request);
             return Ok();
         }
 
-
+        [HttpGet("GetVehicles")]
+        public async Task<IActionResult> GetVehicles([FromQuery]bool isActive)
+        {
+            var result = await _vehiclesService.GetVehicles(isActive);
+            return Ok(result);
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace RentCarApi.Entities.Vehicles.BaseEntities
         {
 
         }
-        public Vehicle(short seatCount, bool airCondition, short doorsCount, string luggagesCount, double rentalPrice, Transmission transmission, string? releaseYear, double engineVolume)
+        public Vehicle(short seatCount, bool airCondition, short doorsCount, string? luggagesCount, double? rentalPrice, Transmission transmission, string? releaseYear, double engineVolume)
         {
             SeatCount = seatCount;
             AirCondition = airCondition;
@@ -39,11 +39,11 @@ namespace RentCarApi.Entities.Vehicles.BaseEntities
         public int ModelId { get; private set; }
         public virtual Model? Model { get; private set; }
 
-        public int VehicleLocationId { get; private set; }
+        public int? VehicleLocationId { get; private set; }
         public virtual VehicleLocation? VehicleLocation { get; private set; }
 
         #region Methods
-        public Vehicle CreateVehicle(short seatCount, bool airCondition, short doorsCount, string luggagesCount, double rentalPrice, Transmission transmission, string? releaseYear, double engineVolume)
+        public static Vehicle CreateVehicle(short seatCount, bool airCondition, short doorsCount, string? luggagesCount, double? rentalPrice, Transmission transmission, string? releaseYear, double engineVolume)
         {
             return new Vehicle(seatCount, airCondition, doorsCount, luggagesCount, rentalPrice, transmission, releaseYear, engineVolume);
         }
@@ -59,6 +59,11 @@ namespace RentCarApi.Entities.Vehicles.BaseEntities
         public void AssignLocation(VehicleLocation vehicleLocation)
         {
             VehicleLocation = vehicleLocation;
+        }
+
+        public void DeleteVehicleLocation()
+        {
+            VehicleLocation = null;
         }
 
         #endregion

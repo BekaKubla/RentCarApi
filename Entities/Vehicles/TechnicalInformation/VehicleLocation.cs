@@ -5,13 +5,13 @@ namespace RentCarApi.Entities.Vehicles.TechnicalInformation
 {
     public class VehicleLocation : MainEntity
     {
-        public VehicleLocation(string location)
+        public VehicleLocation(string? location)
         {
             Location = location;
         }
         public string? Location { get; private set; }
-        public IEnumerable<Vehicle> Vehicles { get; private set; } = new List<Vehicle>();
-        public static VehicleLocation CreateVehicleLocation(string location)
+        public virtual IEnumerable<Vehicle> Vehicles { get; private set; } = new List<Vehicle>();
+        public static VehicleLocation CreateVehicleLocation(string? location)
         {
             return new VehicleLocation(location);
         }

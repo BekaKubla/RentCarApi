@@ -5,18 +5,29 @@ namespace RentCarApi.Entities.Vehicles.TechnicalInformation
 {
     public class Model : MainEntity
     {
-        public Model(string modelName)
+        protected Model()
+        {
+
+        }
+        public Model(string? modelName)
         {
             ModelName = modelName;
         }
 
-        public string? ModelName { get; set; }
+        public string? ModelName { get; private set; }
+
+        public int MarkId { get; private set; }
+        public virtual Mark Mark { get; private set; }
 
         public virtual IEnumerable<Vehicle> Vehicles { get; private set; } = new List<Vehicle>();
 
-        public static Model Create(string modelName)
+        public static Model Create(string? modelName)
         {
             return new Model(modelName);
+        }
+        public void AssignMark(Mark mark)
+        {
+            Mark = mark;
         }
     }
 }

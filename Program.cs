@@ -1,10 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using RentCarApi.Context;
-using RentCarApi.Repositories.UnitOfWork;
-using RentCarApi.Repositories.Vehicles.Base;
-using RentCarApi.Repositories.Vehicles.TechnicalInformation.Location;
-using RentCarApi.Repositories.Vehicles.TechnicalInformation.VehicleMark;
-using RentCarApi.Repositories.Vehicles.TechnicalInformation.VehicleModel;
+using RentCarApi.Persistence.Context;
+using RentCarApi.Persistence.Repositories.UnitOfWork;
+using RentCarApi.Persistence.Repositories.Vehicles.Base;
+using RentCarApi.Persistence.Repositories.Vehicles.TechnicalInformation.Location;
+using RentCarApi.Persistence.Repositories.Vehicles.TechnicalInformation.VehicleMark;
+using RentCarApi.Persistence.Repositories.Vehicles.TechnicalInformation.VehicleModel;
+using RentCarApi.Services.VehicleServices.VehicleService;
+using RentCarApi.Services.VehicleServices.VehiclesTechnicalServices.LocationService;
+using RentCarApi.Services.VehicleServices.VehiclesTechnicalServices.MarkService;
+using RentCarApi.Services.VehicleServices.VehiclesTechnicalServices.ModelService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +24,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RentCarConnection"));
 });
 
-builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IVehicleRepository, VehicleRepository>();
 builder.Services.AddTransient<IMarkRepository, MarkRepository>();
 builder.Services.AddTransient<IModelRepository, ModelRepository>();
 builder.Services.AddTransient<IVehicleLocationRepository, VehicleLocationRepository>();
+
+builder.Services.AddScoped<ModelService>();
+builder.Services.AddScoped<MarkServices>();
+builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<VehiclesService>();
 
 var app = builder.Build();
 

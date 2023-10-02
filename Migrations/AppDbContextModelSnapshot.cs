@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RentCarApi.Context;
+using RentCarApi.Persistence.Context;
 
 #nullable disable
 
@@ -18,6 +18,9 @@ namespace RentCarApi.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -66,7 +69,10 @@ namespace RentCarApi.Migrations
                     b.Property<int>("Transmission")
                         .HasColumnType("int");
 
-                    b.Property<int>("VehicleLocationId")
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("VehicleLocationId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -97,6 +103,9 @@ namespace RentCarApi.Migrations
                     b.Property<string>("MarkName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Mark");
@@ -116,10 +125,18 @@ namespace RentCarApi.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MarkId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ModelName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("MarkId");
 
                     b.ToTable("Model");
                 });
@@ -140,6 +157,9 @@ namespace RentCarApi.Migrations
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -163,8 +183,7 @@ namespace RentCarApi.Migrations
                     b.HasOne("RentCarApi.Entities.Vehicles.TechnicalInformation.VehicleLocation", "VehicleLocation")
                         .WithMany("Vehicles")
                         .HasForeignKey("VehicleLocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Mark");
 
@@ -173,8 +192,21 @@ namespace RentCarApi.Migrations
                     b.Navigation("VehicleLocation");
                 });
 
+            modelBuilder.Entity("RentCarApi.Entities.Vehicles.TechnicalInformation.Model", b =>
+                {
+                    b.HasOne("RentCarApi.Entities.Vehicles.TechnicalInformation.Mark", "Mark")
+                        .WithMany("Models")
+                        .HasForeignKey("MarkId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Mark");
+                });
+
             modelBuilder.Entity("RentCarApi.Entities.Vehicles.TechnicalInformation.Mark", b =>
                 {
+                    b.Navigation("Models");
+
                     b.Navigation("Vehicles");
                 });
 
